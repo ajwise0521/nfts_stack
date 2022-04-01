@@ -1,0 +1,43 @@
+{
+  "name": "nfts_stack",
+  "version": "0.1.0",
+  "bin": {
+    "nfts_stack": "bin/nfts_stack.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc -w",
+    "test": "jest",
+    "cdk": "cdk"
+  },
+  "devDependencies": {
+    "@types/jest": "^26.0.10",
+    "@types/node": "10.17.27",
+    "aws-cdk": "^2.16.0",
+    "jest": "^26.4.2",
+    "ts-jest": "^26.2.0",
+    "ts-node": "^9.0.0",
+    "typescript": "~3.9.7"
+  },
+  "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.55.0",
+    "@aws-sdk/lib-dynamodb": "^3.55.0",
+    "@aws-sdk/util-dynamodb": "^3.55.0",
+    "@metaplex/js": "^4.12.0",
+    "@nfteyez/sol-rayz": "^0.7.2",
+    "@project-serum/anchor": "^0.23.0",
+    "@types/aws-lambda": "^8.10.93",
+    "@types/aws-sdk": "^2.7.0",
+    "@types/lodash": "^4.14.180",
+    "@types/mysql": "^2.15.21",
+    "@types/pg": "^8.6.5",
+    "aws-cdk-lib": "2.16.0",
+    "aws-lambda": "^1.0.7",
+    "constructs": "^10.0.0",
+    "lodash": "^4.17.21",
+    "mysql": "^2.18.1",
+    "pg": "^8.7.3",
+    "source-map-support": "^0.5.16",
+    "winston": "^3.6.0"
+  }
+}
