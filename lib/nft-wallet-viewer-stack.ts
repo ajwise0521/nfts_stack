@@ -1,13 +1,10 @@
 import { 
-    Stack,
-    StackProps,
-    aws_ec2
-  } from 'aws-cdk-lib';
-  import { Construct } from 'constructs';
-  import { TableAccessGrantee, TableNames, Tables } from './Tables';
-  import { grantTableAccess } from './buildTableAccess';
-  import * as Queues from './Queues'
-  import { getWalletViewerApi } from './Apis/walletViewerApi';
+  Stack,
+  StackProps,
+  aws_ec2
+} from 'aws-cdk-lib';
+import { Construct } from 'constructs';
+import { getWalletViewerApi } from './Apis/walletViewerApi';
 import { getNftsDatabase } from './Database/NFtsDatabase';
   
 
@@ -31,6 +28,7 @@ import { getNftsDatabase } from './Database/NFtsDatabase';
           cidr: '10.0.0.0/16',
           natGateways: 0,
           maxAzs: 3,
+
       }
     )
     return vpc

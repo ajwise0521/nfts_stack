@@ -3,29 +3,37 @@ import { getWalletsNfts } from "../../helpers/nftHelpers"
 import MySqlDatabase from "../../db/base/mysqlDatabase"
 import { nftsDbConfig } from "../../db/base/dbConfig"
 import { isString } from "lodash"
+import { getVerifiedCollections } from '../../db/sql/verificationCollectionsQueries'
+import { verifyWallet, WalletVerification } from "../controllers/verificationController"
+import { getAllowedResponseHeaders } from "../../helpers/cdkHelpers"
+
 const nftsDatabaseConnection = new MySqlDatabase('NFTs Database Connection', nftsDbConfig)
 
-export const handle = async (event: APIGatewayProxyEvent|string): Promise<APIGatewayProxyResult> => {
+export const handle = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
     let walletId: string
-    if(isString(event)) {
-        walletId = event
-    } else {
      walletId = event.pathParameters?.walletId ?? ''
-    }
+    console.log(`wallet: ${walletId}`)
     try {
-        const nfts = await getWalletsNfts(walletId, nftsDatabaseConnection)
-        console.log(`nfts: ${JSON.stringify(nfts)}`)
+        const promises = await Promise.all([
+            await getWalletsNfts(walletId, nftsDatabaseConnection),
+            await getVerifiedCollections(nftsDatabaseConnection)
+        ])
+        console.log(JSON.stringify(promises))
+        const nfts = promises[0]
+        const verifiedCollections = promises[1]
+        const walletVerification: WalletVerification = await verifyWallet(nfts.collections, verifiedCollections, walletId, nftsDatabaseConnection)
+
         return {
             statusCode: 200,
-            body: JSON.stringify(nfts)
+            headers: getAllowedResponseHeaders(),
+            body: JSON.stringify({...nfts, ...{verification: walletVerification}})
         }
     } catch(error) {
         console.log(error instanceof Error ? error.message: 'unknown error')
         return {
             statusCode: 500,
+            headers: getAllowedResponseHeaders(),
             body: error instanceof Error ? error.message : 'unknown error'
         }
     }
 }
-
-handle('HcbnbYctUWHFndNQGpNGnicDpDn2fSt3AscfrM3j7JT8')

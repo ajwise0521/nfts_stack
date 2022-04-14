@@ -28,5 +28,8 @@
       "aws",
       "aws-cn"
     ]
+  },
+  "features": {
+    "buildkit": false
   }
 }

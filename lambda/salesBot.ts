@@ -6,26 +6,17 @@ import { CollectionConfig as ConfigClass } from './configuration/collection'
 import { isUndefined, isNil, last }  from 'lodash'
 import { postSaleToDiscord } from '../helpers/misc'
 import { setCollectionLastKnownSignature } from '../lambda/controllers/DynamoDb'
+import { MagicEden } from './controllers/magicEden'
+import { marketplaceMap } from '../helpers/nftHelpers'
 config()
 
 const url = solanaWeb3.clusterApiUrl('mainnet-beta')
-const solanaConnection = new solanaWeb3.Connection(url, 'confirmed')
+const solanaConnection = new solanaWeb3.Connection(url, 'finalized')
 const { metadata: { Metadata } } = programs
-const pollingInterval = 60000
-
-const marketplaceMap: Record<string, string> = {
-    "M2mx93ekt1fmXSVkTrUL9xVFHkmME8HTUi5Cyc5aF7K": "Magic Eden v2",
-    "MEisE1HzehtrDpAAT8PnLHjpSSkRYakotTuJRPjTpo8": "Magic Eden v1",
-    "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA": "Solanart",
-    "HZaWndaNWHFDd9Dhk5pqUUtsmoBCqzb1MLu3NAh1VX6B": "AA"
-}
 
 export const runSalesBot = async (event: any) => {
-
-        console.log(`collection: ${JSON.stringify(event.Records[0].messageAttributes['collection'].stringValue)}`)
         try {
             const collectionConfig: ConfigClass = JSON.parse(event.Records[0].messageAttributes['collection'].stringValue)
-            console.log(`collectionConfig: ${JSON.stringify(collectionConfig)}`)
             if(isUndefined(collectionConfig)) {
                 console.log(`configuration not found`)
                 return
@@ -39,12 +30,12 @@ export const runSalesBot = async (event: any) => {
             let lastKnownSignature: string = collectionConfig.lastKnownSignature
             const options: solanaWeb3.SignaturesForAddressOptions = {}
             options.until = lastKnownSignature
-            const signatures = await solanaConnection.getSignaturesForAddress(projectPubKey, options, 'confirmed')
+            const signatures = await solanaConnection.getSignaturesForAddress(projectPubKey, options, 'finalized')
             if(signatures.length === 0) {
                 console.log(`No new signatures for ${collectionConfig.collectionName} collection. Ending process`)
                 return
             }
-            console.log(`${signatures.length} new signatures`)
+            const magicEden = new MagicEden
             for (let i = signatures.length - 1; i >=0; i--) {
                 try {
                     let { signature } = signatures[i]
@@ -53,17 +44,18 @@ export const runSalesBot = async (event: any) => {
                     if(isNil(txn) || isUndefined(txn) ) { continue }
                     const dateString = txn?.blockTime ? new Date(txn?.blockTime * 1000).toLocaleString("en-US", {timeZone: "America/Chicago"}) : ''
                     const price = txn.meta ? Math.abs((txn.meta.preBalances[0] - txn.meta.postBalances[0])) / solanaWeb3.LAMPORTS_PER_SOL : 0
-                    const accounts = txn.transaction.message.accountKeys
-                    console.log(JSON.stringify(accounts))
+                    const accounts = txn.transaction.message.programIds()
                     const marketplaceAccount = accounts[accounts.length - 1].toString()
-    
-                    if(marketplaceMap[marketplaceAccount]) {
-                        const metadata = (!isNil(txn?.meta) && !isNil(txn?.meta?.postTokenBalances)) ? await getMetadata(txn.meta.postTokenBalances[0].mint) : ''
+                    const isValid = !txn.meta?.logMessages?.some((log) =>
+                    log.includes("Sale cancelled by seller")
+                  );
+                    if(marketplaceMap[marketplaceAccount] && isValid) {
+                        const metadata = (!isNil(txn?.meta) && !isNil(txn?.meta?.postTokenBalances)) ? await magicEden.getMetadata(txn.meta.postTokenBalances[0].mint) : ''
                         if(!metadata) {
                             console.log('couldnt get metadata')
                             continue
                         }
-                        await postSaleToDiscord(metadata.name, price, dateString, signature, metadata.results.img, collectionConfig)
+                        await postSaleToDiscord(metadata.collectionTitle, price, dateString, signature, metadata.img, collectionConfig)
                     } else {
                         console.log('not a supported marketplace sale')
                     }
@@ -72,21 +64,10 @@ export const runSalesBot = async (event: any) => {
                     continue
                 }
             }
-            console.log(`lastKnownSignature: ${lastKnownSignature}`)
             await setCollectionLastKnownSignature(collectionConfig, lastKnownSignature)
         } catch(err) {
             console.log(`error fetching signatures: ${err instanceof Error ? JSON.stringify(err) : err}`)
             return
         }
 
-}
-
-const getMetadata = async(mintAddress: string) => {
-    try {
-        const { data } = await axios.get(`https://api-mainnet.magiceden.dev/rpc/getNFTByMintAddress/${mintAddress}`)
-
-        return data
-    } catch(err) {
-        console.log("error fetching medtadata: ")
-    }
 }

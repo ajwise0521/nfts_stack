@@ -13,7 +13,7 @@ import {
     ParameterGroup
 } from "aws-cdk-lib/aws-rds";
 import {InstanceClass, InstanceSize, InstanceType, IVpc, SecurityGroup } from "aws-cdk-lib/aws-ec2";
-
+import { APIGatewayProxyResult } from "aws-lambda"
 import { Construct } from 'constructs'
 import {Duration, RemovalPolicy} from "aws-cdk-lib";
 export function addLambdaApiPermission(
@@ -80,5 +80,33 @@ export function addLambdaApiPermission(
         autoMinorVersionUpgrade: false,
         removalPolicy: RemovalPolicy.DESTROY
     }
+}
+
+export const getAllowedResponseHeaders = () => {
+    return { 
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Headers': '*'
+    }
+}
+
+export const generateResponse = (results: object, success: boolean, statusCode: number, error?: string): APIGatewayProxyResult => {
+    const body: WalletApiBaseResponseBody = {
+        results,
+        success
+    }
+    if(error && !success) {
+        body.error = error
+    }
+    return {
+        body: JSON.stringify(body),
+        statusCode,
+        headers: getAllowedResponseHeaders()
+    }
+}
+
+export interface WalletApiBaseResponseBody {
+    results: object
+    success: boolean
+    error?: string
 }
 

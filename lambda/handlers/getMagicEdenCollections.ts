@@ -3,6 +3,9 @@ import MySqlDatabase from "../../db/base/mysqlDatabase"
 import { nftsDbConfig } from "../../db/base/dbConfig"
 import { getCollectionCount, upsertMagicEdenCollections } from "../../db/sql/nftCollectionQueries"
 import { config } from 'dotenv'
+import { isVerified } from '../controllers/verificationController'
+import { getAllowedResponseHeaders } from "../../helpers/cdkHelpers"
+
 config({path: '../../.env'})
 const nftsDatabaseConnection = new MySqlDatabase('NFTs Database Connection', nftsDbConfig)
 const defaultLimit = 500
@@ -32,5 +35,3 @@ export const handle = async () => {
     }
     console.log('out of while loop')
 }
-
-handle()

@@ -1,5 +1,4 @@
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from "aws-lambda"
-import { getWalletCollections } from "../../helpers/nftHelpers"
 import MySqlDatabase from "../../db/base/mysqlDatabase"
 import { nftsDbConfig } from "../../db/base/dbConfig"
 
@@ -11,11 +10,10 @@ export const handle = async (event: APIGatewayProxyEvent): Promise<APIGatewayPro
     console.log('two')
     const walletId: string = event.pathParameters?.walletId ?? ''
     try {
-        const collections = await getWalletCollections(walletId, nftsDatabaseConnection)
 
         return {
             statusCode: 200,
-            body: JSON.stringify(collections)
+            body: JSON.stringify({})
         }
     } catch(error) {
         return {

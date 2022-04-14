@@ -8,10 +8,15 @@ export class HowRare {
         })
     }
 
-    getCollectionRank = async (collectionName: string): Promise<HowRareResponse> =>{
-        let response = await this.instance.get(`v0.1/collections/${collectionName}`)
+    getCollectionRank = async (collectionName: string): Promise<HowRareResponse> => {
+        try {
+            let response = await this.instance.get(`v0.1/collections/${collectionName}`)
+            return response.data as HowRareResponse
+        } catch(error) {
+            console.log(`error getting ranks: ${error instanceof Error ? error.message : 'unknown error'}`)
+            return {} as HowRareResponse
+        }
 
-        return response.data as HowRareResponse
     }
 }
 
