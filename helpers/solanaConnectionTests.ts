@@ -14,6 +14,7 @@ import { isVerified } from '../lambda/controllers/verificationController'
 import dayjs from 'dayjs'
 import { handle as postSuggestion } from '../lambda/handlers/postSuggestion'
 import { APIGatewayEventRequestContextWithAuthorizer, APIGatewayEventDefaultAuthorizerContext } from 'aws-lambda'
+import { handle as getWalletCollections } from '../lambda/handlers/getWalletCollections'
 
 config()
 import { MagicEden, MagicEdenCollection } from '../lambda/controllers/magicEden';
@@ -49,9 +50,9 @@ const getHowRareCollection = async(collectionName: string) => {
 
 
 const handle = async () => {
-    const nfts = await getWalletsNfts('HcbnbYctUWHFndNQGpNGnicDpDn2fSt3AscfrM3j7JT8', nftsDatabaseConnection)
+    // const nfts = await getWalletCollections('4GiPZP84ZphSPuV6FGX35npdvAbnL56tWKoKefVwzCGN', nftsDatabaseConnection)
 
-    console.log(JSON.stringify(nfts))
+    // console.log(JSON.stringify(nfts))
 }
 
 
@@ -83,14 +84,14 @@ interface groupedAlternative {
     rank: number|null
 }
 const handler = async () => {
-    const response = await postSuggestion({
-        body: JSON.stringify({description: 'this is a test'}), 
+    const response = await getWalletCollections({
+        body: '', 
         headers: {}, 
         multiValueHeaders: {}, 
-        httpMethod: 'POST', 
+        httpMethod: 'GET', 
         isBase64Encoded: true,
         path: '',
-        pathParameters: {},
+        pathParameters: {walletId: 'HcbnbYctUWHFndNQGpNGnicDpDn2fSt3AscfrM3j7JT8'},
         queryStringParameters: {},
         multiValueQueryStringParameters: {},
         stageVariables: {},
@@ -101,5 +102,5 @@ const handler = async () => {
     console.log(`response: ${JSON.stringify(response)}`)
 }
 
-handle()
+handler()
 

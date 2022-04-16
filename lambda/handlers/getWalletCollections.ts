@@ -1,25 +1,18 @@
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from "aws-lambda"
 import MySqlDatabase from "../../db/base/mysqlDatabase"
 import { nftsDbConfig } from "../../db/base/dbConfig"
-
+import { getWalletCollections } from "../../helpers/nftHelpers"
+import { generateResponse } from "../../helpers/cdkHelpers"
+const nftsDatabaseConnection = new MySqlDatabase('NFTs Database Connection', nftsDbConfig)
 
 export const handle = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
-    console.log('one')
-    const nftsDatabaseConnection = new MySqlDatabase('NFTs Database Connection', nftsDbConfig)
-    
-    console.log('two')
     const walletId: string = event.pathParameters?.walletId ?? ''
+    console.log(walletId)
     try {
-
-        return {
-            statusCode: 200,
-            body: JSON.stringify({})
-        }
+        const collections = await getWalletCollections(walletId, nftsDatabaseConnection)
+        return generateResponse(collections, true, 200)
     } catch(error) {
-        return {
-            statusCode: 400,
-            body: error instanceof Error ? error.message : ''
-        }
+        return generateResponse({}, false, 500, error)
     }
 }
 

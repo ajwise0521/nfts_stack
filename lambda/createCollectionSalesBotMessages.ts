@@ -9,7 +9,6 @@ export const handle = async () => {
     console.log(`collections: ${JSON.stringify(collections)}`)
     console.log(`sqs url: ${process.env.SALES_BOT_QUEUE_URL}`)
     await Promise.all(collections.map(async (collection) => {
-        console.log(`collection: ${JSON.stringify(collection)}`)
         const attributeMap: messageAttributeMap[] = [{
             name: 'collection',
             stringValue: JSON.stringify(collection)

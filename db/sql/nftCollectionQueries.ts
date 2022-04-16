@@ -106,7 +106,7 @@ export const updateCollectionsUpdateAuthorities = async <T>(connection: Database
     }
 }
 
-export const getVerifiedCollectionsCollections= async(connection: Database): Promise<nftCollectionWithVerificationCount[]> => {
+export const getVerifiedCollectionsCollections = async(connection: Database): Promise<nftCollectionWithVerificationCount[]> => {
     const ids: number[] = []
     try {
         const queryString = `select nft_collections.*, verification_collections.required_count from verification_collections JOIN nft_collections ON verification_collections.collection_id = nft_collections.id`

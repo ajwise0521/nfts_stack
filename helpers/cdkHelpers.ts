@@ -89,13 +89,13 @@ export const getAllowedResponseHeaders = () => {
     }
 }
 
-export const generateResponse = (results: object, success: boolean, statusCode: number, error?: string): APIGatewayProxyResult => {
+export const generateResponse = (results: object, success: boolean, statusCode: number, error?: string|Error|unknown): APIGatewayProxyResult => {
     const body: WalletApiBaseResponseBody = {
         results,
         success
     }
     if(error && !success) {
-        body.error = error
+        body.error = error instanceof Error ? error.message : 'unknown error'
     }
     return {
         body: JSON.stringify(body),

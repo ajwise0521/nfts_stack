@@ -8,6 +8,7 @@ export interface nftCollection {
     discord: string,
     website: string,
     updateAuthority: string,
+    count?: number
 }
 
 export interface nftCollectionCount {
