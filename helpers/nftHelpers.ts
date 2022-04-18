@@ -63,6 +63,8 @@ export const getWalletsNfts = async (wallet: string, connection: Database) => {
             if(collection.nfts.length > 0) {
                 collection.count = collection.nfts.length
                 collection.collection = getNftCollectionByUpdateAuthority(collection.nfts[0].updateAuthority, nftCollections)
+            } else {
+                emptyCollections.push(index)
             }
         })
 
