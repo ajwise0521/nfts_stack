@@ -29,24 +29,24 @@ export const getWalletsNfts = async (wallet: string, connection: Database) => {
         let collectionUAs = [walletNfts[currIndex].updateAuthority]
 
         const newWalletNfts = walletNfts.forEach((walletNft, i) => {
-            const index = mapFromUpdateAuthorities.findIndex(element => element === walletNft.updateAuthority)
-            if(index != -1) {
-                walletNft.updateAuthority = mapToUpdateAuthorities[index]
-            }
-            if(walletNft.updateAuthority == currCollection) {
-                collections[currIndex].nfts.push(walletNft)
-            } else if(collectionUAs.findIndex(element => element == walletNft.updateAuthority) !== -1) {
-                const tempIndex = collectionUAs.findIndex(element => element == walletNft.updateAuthority)
-                collections[tempIndex].nfts.push(walletNft)
-            }
-             else {
-                collections.push({
-                    nfts: [walletNft]
-                })
-                currIndex = currIndex + 1
-                currCollection = walletNft.updateAuthority
-                collectionUAs.push(walletNft.updateAuthority)
-            }
+                const index = mapFromUpdateAuthorities.findIndex(element => element === walletNft.updateAuthority)
+                if(index != -1) {
+                    walletNft.updateAuthority = mapToUpdateAuthorities[index]
+                }
+                if(walletNft.updateAuthority == currCollection) {
+                    collections[currIndex].nfts.push(walletNft)
+                } else if(collectionUAs.findIndex(element => element == walletNft.updateAuthority) !== -1) {
+                    const tempIndex = collectionUAs.findIndex(element => element == walletNft.updateAuthority)
+                    collections[tempIndex].nfts.push(walletNft)
+                }
+                else {
+                    collections.push({
+                        nfts: [walletNft]
+                    })
+                    currIndex = currIndex + 1
+                    currCollection = walletNft.updateAuthority
+                    collectionUAs.push(walletNft.updateAuthority)
+                }
         })
         const updateAuthorities: string[] = []
 
@@ -57,9 +57,17 @@ export const getWalletsNfts = async (wallet: string, connection: Database) => {
         })
         const nftCollections = await getCollectionsInUpdateAuthority(updateAuthorities, connection)
 
-        collections.forEach(collection => {
-            collection.count = collection.nfts.length
-            collection.collection = getNftCollectionByUpdateAuthority(collection.nfts[0].updateAuthority, nftCollections)
+        const emptyCollections: number[] = []
+
+        collections.forEach((collection, index) => {
+            if(collection.nfts.length > 0) {
+                collection.count = collection.nfts.length
+                collection.collection = getNftCollectionByUpdateAuthority(collection.nfts[0].updateAuthority, nftCollections)
+            }
+        })
+
+        emptyCollections.forEach(collection =>  {
+            collections.splice(collection, 1)
         })
 
         return {
