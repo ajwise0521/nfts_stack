@@ -15,7 +15,8 @@ import dayjs from 'dayjs'
 import { handle as postSuggestion } from '../lambda/handlers/postSuggestion'
 import { APIGatewayEventRequestContextWithAuthorizer, APIGatewayEventDefaultAuthorizerContext } from 'aws-lambda'
 import { handle as getWalletCollections } from '../lambda/handlers/getWalletCollections'
-const solConnection = solNfts.createConnectionConfig('https://solana-api.projectserum.com')
+const url = solanaWeb3.clusterApiUrl('mainnet-beta')
+const solanaConnection = new solanaWeb3.Connection(url, 'confirmed')
 
 config()
 import { MagicEden, MagicEdenCollection } from '../lambda/controllers/magicEden';
@@ -51,22 +52,12 @@ const getHowRareCollection = async(collectionName: string) => {
 
 
 const handle = async () => {
-    const response = getWalletContents({
-        body: '', 
-        headers: {}, 
-        multiValueHeaders: {}, 
-        httpMethod: 'GET', 
-        isBase64Encoded: true,
-        path: '',
-        pathParameters: {walletId: 'HcbnbYctUWHFndNQGpNGnicDpDn2fSt3AscfrM3j7JT8'},
-        queryStringParameters: {},
-        multiValueQueryStringParameters: {},
-        stageVariables: {},
-        requestContext: {} as APIGatewayEventRequestContextWithAuthorizer<APIGatewayEventDefaultAuthorizerContext>,
-        resource: ''
-    })
-
-    console.log(JSON.stringify(response))
+    
+    const lastKnownSignature = '2Y2xCetBUSwK2av9SaQmmRd2RrS78XTZNQe1cqUNv33xzQX6j7Ya58Padscd1HJDLkHuGYAX53wefFL5h7uoTeJE'
+    const projectPubKey = new solanaWeb3.PublicKey('TTJoQpxrRboWp6Kx2jGKGwj7ABq8sqw7vidMEjsoifb')
+    const signatures = await solanaConnection.getSignaturesForAddress(projectPubKey, {until: lastKnownSignature}, 'finalized')
+    console.log(JSON.stringify(signatures))
+    console.log(signatures.length)
 }
 
 

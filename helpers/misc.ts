@@ -70,7 +70,7 @@ export const postSaleToDiscord = async (title: string, price: number, date: stri
             ]
         })
     } catch(err) {
-        console.log('error posting to discord: ')
+        console.log(`error posting to discord: ${err instanceof Error ? err.message : 'unknown error'}`)
         return
     }
 }

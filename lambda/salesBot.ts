@@ -32,7 +32,6 @@ export const runSalesBot = async (event: any) => {
             options.until = lastKnownSignature
             const signatures = await solanaConnection.getSignaturesForAddress(projectPubKey, options, 'finalized')
             if(signatures.length === 0) {
-                console.log(`No new signatures for ${collectionConfig.collectionName} collection. Ending process`)
                 return
             }
             const magicEden = new MagicEden
@@ -55,7 +54,7 @@ export const runSalesBot = async (event: any) => {
                             console.log('couldnt get metadata')
                             continue
                         }
-                        await postSaleToDiscord(metadata.collectionTitle, price, dateString, signature, metadata.img, collectionConfig)
+                        await postSaleToDiscord(metadata.results.collectionTitle, price, dateString, signature, metadata.results.img, collectionConfig)
                     } else {
                         console.log('not a supported marketplace sale')
                     }
