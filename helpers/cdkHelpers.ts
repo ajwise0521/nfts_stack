@@ -56,7 +56,8 @@ export function addLambdaApiPermission(
 
   export const buildDatabaseInstanceProps = (
     vpc: IVpc,
-    securityGroups: SecurityGroup[]
+    securityGroups: SecurityGroup[],
+    dbId: string
     ): DatabaseInstanceProps => {
 
     return {
@@ -69,8 +70,8 @@ export function addLambdaApiPermission(
         publiclyAccessible: true,
         securityGroups,
         instanceType: InstanceType.of(InstanceClass.T4G, InstanceSize.SMALL),
-        instanceIdentifier: 'nfts-database',
-        credentials: Credentials.fromGeneratedSecret('admin', {secretName: 'NftsDatabaseSecret'}),
+        instanceIdentifier: dbId === 'NftsDatabaseStage' ? 'nfts-database-staging' : 'nfts-database',
+        credentials: Credentials.fromGeneratedSecret('admin', {secretName: dbId + 'Secret'}),
         backupRetention: Duration.days(2),
         preferredBackupWindow: '08:00-08:30',
         preferredMaintenanceWindow: 'sun:06:00-sun:06:30',

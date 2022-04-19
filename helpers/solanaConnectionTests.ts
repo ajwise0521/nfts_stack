@@ -15,6 +15,7 @@ import dayjs from 'dayjs'
 import { handle as postSuggestion } from '../lambda/handlers/postSuggestion'
 import { APIGatewayEventRequestContextWithAuthorizer, APIGatewayEventDefaultAuthorizerContext } from 'aws-lambda'
 import { handle as getWalletCollections } from '../lambda/handlers/getWalletCollections'
+const solConnection = solNfts.createConnectionConfig('https://solana-api.projectserum.com')
 
 config()
 import { MagicEden, MagicEdenCollection } from '../lambda/controllers/magicEden';
@@ -50,9 +51,22 @@ const getHowRareCollection = async(collectionName: string) => {
 
 
 const handle = async () => {
-    // const nfts = await getWalletCollections('4GiPZP84ZphSPuV6FGX35npdvAbnL56tWKoKefVwzCGN', nftsDatabaseConnection)
+    const response = getWalletContents({
+        body: '', 
+        headers: {}, 
+        multiValueHeaders: {}, 
+        httpMethod: 'GET', 
+        isBase64Encoded: true,
+        path: '',
+        pathParameters: {walletId: 'HcbnbYctUWHFndNQGpNGnicDpDn2fSt3AscfrM3j7JT8'},
+        queryStringParameters: {},
+        multiValueQueryStringParameters: {},
+        stageVariables: {},
+        requestContext: {} as APIGatewayEventRequestContextWithAuthorizer<APIGatewayEventDefaultAuthorizerContext>,
+        resource: ''
+    })
 
-    // console.log(JSON.stringify(nfts))
+    console.log(JSON.stringify(response))
 }
 
 
@@ -102,5 +116,5 @@ const handler = async () => {
     console.log(`response: ${JSON.stringify(response)}`)
 }
 
-handler()
+handle()
 

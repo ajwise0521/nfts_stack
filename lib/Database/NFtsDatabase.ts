@@ -13,7 +13,7 @@ export enum EnvironmentName {
     staging = 'staging',
     prod = 'prod'
 }
-export const getNftsDatabase = (construct: Construct, vpc: aws_ec2.IVpc) => {
+export const getNftsDatabase = (construct: Construct, vpc: aws_ec2.IVpc, props: StackProps) => {
 
         const securityGroup = buildSecurityGroup(
             construct,
@@ -22,7 +22,9 @@ export const getNftsDatabase = (construct: Construct, vpc: aws_ec2.IVpc) => {
             'CargotelSyncRDSSG',
             rdsPeerLists['prod'],
             3306)
-        const instanceProps = buildDatabaseInstanceProps(vpc, [securityGroup])
-        const db = new aws_rds.DatabaseInstance(construct, 'NftsDatabase', instanceProps)
+        const dbId = props?.stackName?.split('-')[1] == 'Stage' ? 'NftsDatabaseStage' : 'NftsDatabase'
+
+        const instanceProps = buildDatabaseInstanceProps(vpc, [securityGroup], dbId)
+        const db = new aws_rds.DatabaseInstance(construct, dbId, instanceProps)
 
 } 

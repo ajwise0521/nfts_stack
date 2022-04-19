@@ -9,7 +9,7 @@ import { Construct } from 'constructs'
 import * as walletViewerlambdas from '../Lambdas/walletViewerLambdas'
 import { addLambdaApiPermission } from '../../helpers/cdkHelpers'
 
-export const getWalletViewerApi = (construct: Construct, vpc: aws_ec2.IVpc) => {
+export const getWalletViewerApi = (construct: Construct, vpc: aws_ec2.IVpc, props: StackProps) => {
 
     const defaultIntegrationOptions: aws_apigateway.IntegrationOptions = {
         requestTemplates: {'application/json': '{ "statusCode": "200" }'}
@@ -31,7 +31,7 @@ export const getWalletViewerApi = (construct: Construct, vpc: aws_ec2.IVpc) => {
     }
     // lambdas
     const lambdas: aws_lambda_nodejs.NodejsFunction[] = []
-    const getWalletContentsLambda = walletViewerlambdas.getWalletContents(construct, vpc)
+    const getWalletContentsLambda = walletViewerlambdas.getWalletContents(construct)
     lambdas.push(getWalletContentsLambda)
     const getWalletCollectionsLambda = walletViewerlambdas.getWalletCollections(construct, vpc)
     lambdas.push(getWalletCollectionsLambda)
@@ -53,7 +53,7 @@ export const getWalletViewerApi = (construct: Construct, vpc: aws_ec2.IVpc) => {
         restApiName: 'WalletViererApi',
         description: 'Deals with gathering information for the front end',
         deployOptions: {
-            stageName: 'Prod'
+            stageName: props?.stackName?.split('-')[1] || undefined
         },
     })
     // =============================================================
@@ -146,7 +146,7 @@ export const getWalletViewerApi = (construct: Construct, vpc: aws_ec2.IVpc) => {
     
     // api key
         const key = api.addApiKey('getWalletKey', {
-        apiKeyName: 'get-wallet-key',
+        apiKeyName: props?.stackName?.split('-')[1] == 'Stage' ? 'get-wallet-key-stage' : 'get-wallet-key',
         })
 
         usagePlan.addApiKey(key)

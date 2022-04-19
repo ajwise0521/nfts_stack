@@ -9,9 +9,8 @@ import { getVpc } from '../nft-wallet-viewer-stack'
 import { environment } from '../../environment'
 
 
-export const getWalletContents = (construct: Construct, vpc: aws_ec2.IVpc): lambda.NodejsFunction => {
+export const getWalletContents = (construct: Construct): lambda.NodejsFunction => {
     return new lambda.NodejsFunction(construct, 'getWalletContents', {
-        vpc,
         entry: 'lambda/handlers/getWalletContents.ts',
         handler: 'handle', 
         timeout: Duration.seconds(60),
