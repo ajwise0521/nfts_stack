@@ -1,5 +1,5 @@
-import { APIGatewayProxyEvent, APIGatewayProxyResult } from "aws-lambda"
-import { HowRare, HowRareResponse, HowRareCollectionItems } from "../controllers/howRare"
+ import { APIGatewayProxyEvent, APIGatewayProxyResult } from "aws-lambda"
+import { MoonRank, MoonRankMint, MoonRankResponse } from '../controllers/moonRank'
 import { isVerified } from '../controllers/verificationController'
 import MySqlDatabase from "../../db/base/mysqlDatabase"
 import { nftsDbConfig } from "../../db/base/dbConfig"
@@ -21,13 +21,13 @@ export const handle = async(event: APIGatewayProxyEvent): Promise<APIGatewayProx
         if(!collectionName) {
             throw(Error('Name not found'))
         }
-        const howRare = new HowRare()
-        const data: HowRareResponse = await howRare.getCollectionRank(collectionName)
-        const collectionData = data.result.data.items.reduce(
-            (entryMap, e: HowRareCollectionItems) => entryMap.set(e.mint, {rank: e.rank}),
+        const moonRank = new MoonRank()
+        const data: MoonRankResponse = await moonRank.getCollectionRanks(collectionName)
+        const collectionData = data.mints.reduce(
+            (entryMap, e: MoonRankMint) => entryMap.set(e.mint, {rank: e.rank}),
             new Map()
         )
-        return generateResponse({source: 'howRare', ranks: Object.fromEntries(collectionData)}, true, 200)
+        return generateResponse({source: 'moonRank', ranks: Object.fromEntries(collectionData)}, true, 200)
     } catch(error) {
         console.log(`Failed to get ranks : ${error instanceof Error ? error.message : 'unknown error'}`)
         return generateResponse({}, false, 400, 'error getting ranks')

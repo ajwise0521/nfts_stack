@@ -81,3 +81,15 @@ export const postSuggestion = (construct: Construct): lambda.NodejsFunction => {
         memorySize: 256
     })
 }
+
+export const getMoonRankCollectionRanks = (construct: Construct): lambda.NodejsFunction => {
+    return new lambda.NodejsFunction(construct, 'moonRankCollectionRanks', {
+        entry: 'lambda/handlers/getCollectionMoonRanks.ts',
+        handler: 'handle',
+        timeout: Duration.seconds(30),
+        memorySize: 256,
+        environment: {
+            ...environment.moonRank
+        }
+    })
+}

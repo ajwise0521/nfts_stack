@@ -45,6 +45,8 @@ export const getWalletViewerApi = (construct: Construct, vpc: aws_ec2.IVpc, prop
     lambdas.push(getVerifiedCollectionsLambda)
     const postSuggestionLambda = walletViewerlambdas.postSuggestion(construct)
     lambdas.push(postSuggestionLambda)
+    const moonRanksLambda = walletViewerlambdas.getMoonRankCollectionRanks(construct)
+    lambdas.push(moonRanksLambda)
 
     // =============================================================
 
@@ -72,8 +74,14 @@ export const getWalletViewerApi = (construct: Construct, vpc: aws_ec2.IVpc, prop
     resources.push(statsResourceCollection)
     const ranksResource =  api.root.addResource('ranks')
     resources.push(ranksResource)
-    const ranksCollectionResource = ranksResource.addResource('{collectionName}')
+    const howRareRanksResource = ranksResource.addResource(`howRare`)
+    resources.push(howRareRanksResource)
+    const ranksCollectionResource = howRareRanksResource.addResource('{collectionName}')
     resources.push(ranksCollectionResource)
+    const moonRanksResource = ranksResource.addResource('moonRank')
+    resources.push(moonRanksResource)
+    const moonRanksCollectionResource = moonRanksResource.addResource('{collectionName}')
+    resources.push(moonRanksCollectionResource)
     const collectionsResource = api.root.addResource('collections')
     resources.push(collectionsResource)
     const collectionSalesResource = collectionsResource.addResource('{royaltyAddress}')
@@ -129,6 +137,12 @@ export const getWalletViewerApi = (construct: Construct, vpc: aws_ec2.IVpc, prop
     const postSuggestionMethod = postSuggestionResource.addMethod(
         'POST',
         new aws_apigateway.LambdaIntegration(postSuggestionLambda, defaultIntegrationOptions),
+        defaultMethodOptions
+    )
+
+    const moonRanksMethod = moonRanksCollectionResource.addMethod(
+        'GET',
+        new aws_apigateway.LambdaIntegration(moonRanksLambda, defaultIntegrationOptions), 
         defaultMethodOptions
     )
 

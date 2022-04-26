@@ -12,5 +12,8 @@ export const environment = {
     },
     howRare: {
         HOW_RARE_IS_API_URL: process.env.HOW_RARE_IS_API_URL ?? 'https://api.howrare.is'
+    },
+    moonRank: {
+        MOON_RANK_API_URL: process.env.MOON_RANK_API_URL ?? 'https://moonrank.app'
     }
 }
