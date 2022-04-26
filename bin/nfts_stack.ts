@@ -7,7 +7,7 @@ import { NftWalletViewerStack } from '../lib/nft-wallet-viewer-stack'
 const app = new cdk.App();
 new NftsStackStack(app, 'NftsStackStack', {});
 new NftWalletViewerStack(app, 'NftWalletViewerStack', {
-  stackName: 'NftWalletViewerStack-Prod',
+  stackName: 'NftWalletViewerStack',
   env: {
     account: '222439617721',
     region: 'us-east-1'
