@@ -107,5 +107,5 @@ const handler = async () => {
     console.log(`response: ${JSON.stringify(response)}`)
 }
 
-handle()
+handler()
 

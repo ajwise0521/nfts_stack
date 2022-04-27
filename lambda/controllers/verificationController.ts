@@ -1,7 +1,7 @@
 import { createWalletConnection, verifyToken } from "../../db/sql/verificationQueries"
 import Database from "../../db/base/database"
 import { nftCollectionCount, nftCollection} from "../../db/tables/nftCollections"
-import { NftWalletCollection } from "../../helpers/nftHelpers"
+import { NftWalletCollection, walletCollection } from "../../helpers/nftHelpers"
 import { VerificationCollection } from "../../db/tables/verificationCollection"
 import { isEmpty } from 'lodash'
 export const isVerified = async (verificationToken: string, connection: Database): Promise<boolean> => {
