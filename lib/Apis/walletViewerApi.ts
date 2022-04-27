@@ -52,7 +52,7 @@ export const getWalletViewerApi = (construct: Construct, vpc: aws_ec2.IVpc, prop
 
     // API
     const api = new aws_apigateway.RestApi(construct, 'WalletViewerApi', {
-        restApiName: 'WalletViererApi',
+        restApiName: 'WalletViewerApi',
         description: 'Deals with gathering information for the front end',
         deployOptions: {
             stageName: props?.stackName?.split('-')[1] || undefined
