@@ -210,7 +210,7 @@ export const getCollectionRecentSales = async (royaltyAddress: string): Promise<
     return marketplaceSales
 }
 
-interface nftsAlternative {   
+export interface nftsAlternative {   
     mint: string;
     updateAuthority: string;
     data: {
