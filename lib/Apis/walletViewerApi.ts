@@ -33,7 +33,7 @@ export const getWalletViewerApi = (construct: Construct, vpc: aws_ec2.IVpc, prop
     const lambdas: aws_lambda_nodejs.NodejsFunction[] = []
     const getWalletContentsLambda = walletViewerlambdas.getWalletContents(construct)
     lambdas.push(getWalletContentsLambda)
-    const getWalletCollectionsLambda = walletViewerlambdas.getWalletCollections(construct, vpc)
+    const getWalletCollectionsLambda = walletViewerlambdas.getWalletCollections(construct)
     lambdas.push(getWalletCollectionsLambda)
     const getMECollectionStatsLambda = walletViewerlambdas.getMECollectionStats(construct)
     lambdas.push(getMECollectionStatsLambda)
@@ -66,6 +66,8 @@ export const getWalletViewerApi = (construct: Construct, vpc: aws_ec2.IVpc, prop
     resources.push(walletResource)
     const walletCollectionResource = walletResource.addResource('collections') // wallet/collections
     resources.push(walletCollectionResource)
+    const walletCollectionsCollections = walletCollectionResource.addResource('{walletId}') // wallet/collections/{walletId}
+    resources.push(walletCollectionsCollections)
     const walletIdResource = walletResource.addResource('{walletId}') // wallet/{walletId}
     resources.push(walletIdResource)
     const statsResource = api.root.addResource('stats')
@@ -106,6 +108,11 @@ export const getWalletViewerApi = (construct: Construct, vpc: aws_ec2.IVpc, prop
     const getWalletContentMethod = walletIdResource.addMethod(
         'GET',
         new aws_apigateway.LambdaIntegration(getWalletContentsLambda, defaultIntegrationOptions),
+        defaultMethodOptions
+    )
+    const getWalletCollectionsMethod = walletCollectionsCollections.addMethod(
+        'GET',
+        new aws_apigateway.LambdaIntegration(getWalletCollectionsLambda, defaultIntegrationOptions),
         defaultMethodOptions
     )
     const getCollectionStatsMethod = statsResourceCollection.addMethod(

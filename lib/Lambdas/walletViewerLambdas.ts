@@ -18,9 +18,8 @@ export const getWalletContents = (construct: Construct): lambda.NodejsFunction =
     })
 }
 
-export const getWalletCollections = (construct: Construct, vpc: aws_ec2.IVpc): lambda.NodejsFunction => {
+export const getWalletCollections = (construct: Construct): lambda.NodejsFunction => {
     return  new lambda.NodejsFunction(construct, 'getWalletCollections', {
-        vpc,
         entry: 'lambda/handlers/getWalletCollections.ts',
         handler: 'handle',
         timeout: Duration.seconds(60),

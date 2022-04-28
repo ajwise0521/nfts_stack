@@ -89,7 +89,7 @@ interface groupedAlternative {
     rank: number|null
 }
 const handler = async () => {
-    const response = await getWalletCollections({
+    const response = await getWalletContents({
         body: '', 
         headers: {}, 
         multiValueHeaders: {}, 
@@ -97,15 +97,17 @@ const handler = async () => {
         isBase64Encoded: true,
         path: '',
         pathParameters: {walletId: 'HcbnbYctUWHFndNQGpNGnicDpDn2fSt3AscfrM3j7JT8'},
-        queryStringParameters: {},
+        queryStringParameters: {updateAuthority: 'FLUNK9i7TNDV6C8n73yoRTJXb9mt2JCqEoBkCVZ7ipDK'},
         multiValueQueryStringParameters: {},
         stageVariables: {},
         requestContext: {} as APIGatewayEventRequestContextWithAuthorizer<APIGatewayEventDefaultAuthorizerContext>,
         resource: ''
     })
 
-    console.log(`response: ${JSON.stringify(response)}`)
+    // console.log(`response: ${JSON.stringify(response)}`)
+    const body = JSON.parse(response.body)
+    console.log(JSON.stringify(body.data))
 }
 
-handle()
+handler()
 
