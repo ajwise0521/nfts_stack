@@ -53,7 +53,7 @@ export const createWalletConnection = async (walletAddress: string, connection: 
 export const isVerifiedWallet = async (walletAddress: string, connection: Database): Promise<boolean> => {
     try {
         const date = dayjs().toISOString()
-        const queryString = `SELECT * FROM verification_addresses WHERE wallet_address = '${walletAddress} AND expiration_date > '${date}`
+        const queryString = `SELECT * FROM verification_addresses WHERE wallet_address = '${walletAddress}' AND expiration_date > '${date}'`
         const statement = new SqlStatement(queryString, [])
         const results = await connection.sqlQuery<WalletConnection>(statement, true)
         if(!results.error && results.rows.length > 0) {
