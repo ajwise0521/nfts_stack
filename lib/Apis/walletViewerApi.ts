@@ -47,6 +47,10 @@ export const getWalletViewerApi = (construct: Construct, vpc: aws_ec2.IVpc, prop
     lambdas.push(postSuggestionLambda)
     const moonRanksLambda = walletViewerlambdas.getMoonRankCollectionRanks(construct)
     lambdas.push(moonRanksLambda)
+    const getAvailableTagsLambda = walletViewerlambdas.getAvailableTags(construct)
+    lambdas.push(getAvailableTagsLambda)
+    const getTargetTagsLambda = walletViewerlambdas.getTargetTags(construct)
+    lambdas.push(getTargetTagsLambda)
 
     // =============================================================
 
@@ -92,7 +96,10 @@ export const getWalletViewerApi = (construct: Construct, vpc: aws_ec2.IVpc, prop
     resources.push(verifiedCollectionsResource)
     const postSuggestionResource = api.root.addResource('suggestion')
     resources.push(postSuggestionResource)
-    postSuggestionResource
+    const tagsResource = api.root.addResource('tags')
+    resources.push(tagsResource)
+    const targetTagsResource = tagsResource.addResource('target')
+    resources.push(targetTagsResource)
     resources.forEach(resource => {
         resource.addCorsPreflight({
             allowOrigins: aws_apigateway.Cors.ALL_ORIGINS,
@@ -153,6 +160,17 @@ export const getWalletViewerApi = (construct: Construct, vpc: aws_ec2.IVpc, prop
         defaultMethodOptions
     )
 
+    const getAvailableTagsMethod = tagsResource.addMethod(
+        'GET',
+        new aws_apigateway.LambdaIntegration(getAvailableTagsLambda, defaultIntegrationOptions),
+        defaultMethodOptions
+    )
+
+    const getTargetTagsMethod = targetTagsResource.addMethod(
+        'GET',
+        new aws_apigateway.LambdaIntegration(getTargetTagsLambda, defaultIntegrationOptions),
+        defaultMethodOptions
+    )
     // =============================================================
 
     // Usage Plan

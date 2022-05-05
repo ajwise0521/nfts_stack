@@ -7,6 +7,7 @@ import { SecurityGroup } from 'aws-cdk-lib/aws-ec2'
 import { Construct } from 'constructs'
 import { getVpc } from '../nft-wallet-viewer-stack'
 import { environment } from '../../environment'
+import { memoryUsage } from 'process'
 
 
 export const getWalletContents = (construct: Construct): lambda.NodejsFunction => {
@@ -90,5 +91,23 @@ export const getMoonRankCollectionRanks = (construct: Construct): lambda.NodejsF
         environment: {
             ...environment.moonRank
         }
+    })
+}
+
+export const getAvailableTags = (construct: Construct): lambda.NodejsFunction => {
+    return new lambda.NodejsFunction(construct, 'getAvailableTags', {
+        entry: 'lambda/handlers/getAvailableTags.ts',
+        handler: 'handle',
+        timeout: Duration.seconds(30),
+        memorySize: 256,
+    })
+}
+
+export const getTargetTags = (construct: Construct): lambda.NodejsFunction => {
+    return new lambda.NodejsFunction(construct, 'getTargetTags', {
+        entry: 'lambda/handlers/getTargetTags.ts',
+        handler: 'handle',
+        timeout: Duration.seconds(30),
+        memorySize: 256
     })
 }

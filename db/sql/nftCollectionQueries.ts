@@ -1,4 +1,3 @@
-import { Connection } from "typeorm"
 import { MagicEdenCollection } from "../../lambda/controllers/magicEden"
 import Database from "../base/database"
 import SqlStatement from "../base/sqlStatement"

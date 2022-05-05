@@ -15,6 +15,9 @@ import dayjs from 'dayjs'
 import { handle as postSuggestion } from '../lambda/handlers/postSuggestion'
 import { APIGatewayEventRequestContextWithAuthorizer, APIGatewayEventDefaultAuthorizerContext } from 'aws-lambda'
 import { handle as getWalletCollections } from '../lambda/handlers/getWalletCollections'
+import { handle as getAvailableTags} from '../lambda/handlers/getAvailableTags'
+import { handle as getTargetTags } from '../lambda/handlers/getTargetTags'
+
 const url = solanaWeb3.clusterApiUrl('mainnet-beta')
 const solanaConnection = new solanaWeb3.Connection(url, 'confirmed')
 
@@ -89,7 +92,22 @@ interface groupedAlternative {
     rank: number|null
 }
 const handler = async () => {
-    const response = await getWalletContents({
+    // const response = await getAvailableTags({
+    //     body: '', 
+    //     headers: {}, 
+    //     multiValueHeaders: {}, 
+    //     httpMethod: 'GET', 
+    //     isBase64Encoded: true,
+    //     path: '',
+    //     pathParameters: {walletId: 'HcbnbYctUWHFndNQGpNGnicDpDn2fSt3AscfrM3j7JT8'},
+    //     queryStringParameters: {updateAuthority: 'FLUNK9i7TNDV6C8n73yoRTJXb9mt2JCqEoBkCVZ7ipDK'},
+    //     multiValueQueryStringParameters: {},
+    //     stageVariables: {},
+    //     requestContext: {} as APIGatewayEventRequestContextWithAuthorizer<APIGatewayEventDefaultAuthorizerContext>,
+    //     resource: ''
+    // })
+
+       const response = await getWalletContents({
         body: '', 
         headers: {}, 
         multiValueHeaders: {}, 
@@ -97,17 +115,37 @@ const handler = async () => {
         isBase64Encoded: true,
         path: '',
         pathParameters: {walletId: 'HcbnbYctUWHFndNQGpNGnicDpDn2fSt3AscfrM3j7JT8'},
-        queryStringParameters: {updateAuthority: 'FLUNK9i7TNDV6C8n73yoRTJXb9mt2JCqEoBkCVZ7ipDK'},
+        queryStringParameters: {updateAuthority: 'BJomJVCbjz22kd84scx7X3eqMTBmuqZ4nhiFR7Cvm6dh'},
         multiValueQueryStringParameters: {},
         stageVariables: {},
         requestContext: {} as APIGatewayEventRequestContextWithAuthorizer<APIGatewayEventDefaultAuthorizerContext>,
         resource: ''
     })
 
-    // console.log(`response: ${JSON.stringify(response)}`)
-    const body = JSON.parse(response.body)
-    console.log(JSON.stringify(body.data))
+    
+
+        // const response = await getTargetTags({
+    //     body: '', 
+    //     headers: {}, 
+    //     multiValueHeaders: {}, 
+    //     httpMethod: 'GET', 
+    //     isBase64Encoded: true,
+    //     path: '',
+    //     pathParameters: {},
+    //     queryStringParameters: {
+    //         walletId: '9tZgnXncsbCahHn8nbxe952Jayn5apMkQtyvyVYi3RWR',
+    //         target: 'Fh9VmGFdzWwE7uKrhq9oAENqZotfHNrJK1K826zXUpz7',
+    //         tagTypeId: '1'
+    //     },
+    //     multiValueQueryStringParameters: {},
+    //     stageVariables: {},
+    //     requestContext: {} as APIGatewayEventRequestContextWithAuthorizer<APIGatewayEventDefaultAuthorizerContext>,
+    //     resource: ''
+    // })
+    console.log(`response: ${JSON.stringify(response)}`)
 }
+
+
 
 handler()
 
