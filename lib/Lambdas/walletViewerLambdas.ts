@@ -111,3 +111,39 @@ export const getTargetTags = (construct: Construct): lambda.NodejsFunction => {
         memorySize: 256
     })
 }
+
+export const getAllCollections = (construct: Construct): lambda.NodejsFunction => {
+    return new lambda.NodejsFunction(construct, 'getAllCollections', {
+        entry: 'lambda/handlers/getAllCollections.ts',
+        handler: 'handle',
+        timeout: Duration.seconds(30),
+        memorySize: 256
+    })
+}
+
+export const getWatchlistCollections = (construct: Construct): lambda.NodejsFunction => {
+    return new lambda.NodejsFunction(construct, 'getWatchlistCollections', {
+        entry: 'lambda/handlers/getWatchlistCollections.ts',
+        handler: 'handle',
+        timeout: Duration.seconds(30),
+        memorySize: 256
+    })
+}
+
+export const postWatchlistCollection = (construct: Construct): lambda.NodejsFunction => {
+    return new lambda.NodejsFunction(construct, 'postWatchlistCollection', {
+        entry: 'lambda/handlers/postWatchlistCollection.ts',
+        handler: 'handle',
+        timeout: Duration.seconds(30),
+        memorySize: 256
+    })
+}
+
+export const deleteWatchlistCollection = (construct: Construct): lambda.NodejsFunction => {
+    return new lambda.NodejsFunction(construct, 'deleteWatchlistCollection', {
+        entry: 'lambda/handlers/deleteWatchlistCollection.ts',
+        handler: 'handle',
+        timeout: Duration.seconds(30),
+        memorySize: 256
+    })
+}

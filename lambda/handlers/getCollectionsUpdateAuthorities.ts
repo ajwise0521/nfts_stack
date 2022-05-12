@@ -12,7 +12,7 @@ function delay(ms: number) {
 export const handle = async () => {
     try {
         let i = 0
-        while(i < 5000) {
+        while(i < 6500) {
             let collections = await getCollectionsWithoutUpdateAuthorities(nftsDatabaseConnection, 50)
             const magicEden = new MagicEden()
             for(let item of collections) {

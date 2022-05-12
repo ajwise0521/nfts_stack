@@ -17,7 +17,12 @@ import { APIGatewayEventRequestContextWithAuthorizer, APIGatewayEventDefaultAuth
 import { handle as getWalletCollections } from '../lambda/handlers/getWalletCollections'
 import { handle as getAvailableTags} from '../lambda/handlers/getAvailableTags'
 import { handle as getTargetTags } from '../lambda/handlers/getTargetTags'
-
+import { handle as getMagicEdenCollections } from '../lambda/handlers/getMagicEdenCollections'
+import { handle as getCollectionsUpdateAuthorities} from '../lambda/handlers/getCollectionsUpdateAuthorities'
+import { handle as getAllCollections } from '../lambda/handlers/getAllCollections'
+import { handle as getWatchListCollections } from '../lambda/handlers/getWatchlistCollections'
+import { handle as postWatchlistCollection } from '../lambda/handlers/postWatchlistCollection'
+import { handle as deleteWatchlistCollection} from '../lambda/handlers/deleteWatchlistCollection'
 const url = solanaWeb3.clusterApiUrl('mainnet-beta')
 const solanaConnection = new solanaWeb3.Connection(url, 'confirmed')
 
@@ -107,20 +112,20 @@ const handler = async () => {
     //     resource: ''
     // })
 
-       const response = await getWalletContents({
-        body: '', 
-        headers: {}, 
-        multiValueHeaders: {}, 
-        httpMethod: 'GET', 
-        isBase64Encoded: true,
-        path: '',
-        pathParameters: {walletId: 'HcbnbYctUWHFndNQGpNGnicDpDn2fSt3AscfrM3j7JT8'},
-        queryStringParameters: {updateAuthority: 'BJomJVCbjz22kd84scx7X3eqMTBmuqZ4nhiFR7Cvm6dh'},
-        multiValueQueryStringParameters: {},
-        stageVariables: {},
-        requestContext: {} as APIGatewayEventRequestContextWithAuthorizer<APIGatewayEventDefaultAuthorizerContext>,
-        resource: ''
-    })
+    //    const response = await getWalletContents({
+    //     body: '', 
+    //     headers: {}, 
+    //     multiValueHeaders: {}, 
+    //     httpMethod: 'GET', 
+    //     isBase64Encoded: true,
+    //     path: '',
+    //     pathParameters: {walletId: 'E2T7WbvrJa4ss6bW37JqURK2Gyu2zBAP4t8qgLZYJfGX'},
+    //     queryStringParameters: {updateAuthority: 'TTJoQpxrRboWp6Kx2jGKGwj7ABq8sqw7vidMEjsoifb'},
+    //     multiValueQueryStringParameters: {},
+    //     stageVariables: {},
+    //     requestContext: {} as APIGatewayEventRequestContextWithAuthorizer<APIGatewayEventDefaultAuthorizerContext>,
+    //     resource: ''
+    // })
 
     
 
@@ -142,6 +147,76 @@ const handler = async () => {
     //     requestContext: {} as APIGatewayEventRequestContextWithAuthorizer<APIGatewayEventDefaultAuthorizerContext>,
     //     resource: ''
     // })
+
+    // const response = await getAllCollections({
+    //     body: '', 
+    //     headers: {
+    //         'wallet-verification-token': 'e62bf115-b01b-5a40-99e8-f8717cac1577'
+    //     }, 
+    //     multiValueHeaders: {}, 
+    //     httpMethod: 'GET', 
+    //     isBase64Encoded: true,
+    //     path: '',
+    //     pathParameters: {},
+    //     queryStringParameters: {},
+    //     multiValueQueryStringParameters: {},
+    //     stageVariables: {},
+    //     requestContext: {} as APIGatewayEventRequestContextWithAuthorizer<APIGatewayEventDefaultAuthorizerContext>,
+    //     resource: ''
+    // })
+
+    // const response = await getWatchListCollections({
+    //     body: '', 
+    //     headers: {}, 
+    //     multiValueHeaders: {}, 
+    //     httpMethod: 'GET', 
+    //     isBase64Encoded: true,
+    //     path: '',
+    //     pathParameters: {walletAddress: '3fcREq7WrSXYpqm2siXhPUR8iWsTovnkdm18DwqXVYnt'},
+    //     queryStringParameters: {},
+    //     multiValueQueryStringParameters: {},
+    //     stageVariables: {},
+    //     requestContext: {} as APIGatewayEventRequestContextWithAuthorizer<APIGatewayEventDefaultAuthorizerContext>,
+    //     resource: ''
+    // })
+
+    // const response = await postWatchlistCollection({
+    //     body: JSON.stringify({
+    //         walletAddress: '3fcREq7WrSXYpqm2siXhPUR8iWsTovnkdm18DwqXVYnt',
+    //         collectionId: 515
+    //     }), 
+    //     headers: {}, 
+    //     multiValueHeaders: {}, 
+    //     httpMethod: 'GET', 
+    //     isBase64Encoded: true,
+    //     path: '',
+    //     pathParameters: {},
+    //     queryStringParameters: {},
+    //     multiValueQueryStringParameters: {},
+    //     stageVariables: {},
+    //     requestContext: {} as APIGatewayEventRequestContextWithAuthorizer<APIGatewayEventDefaultAuthorizerContext>,
+    //     resource: ''
+    // })
+
+
+    const response = await deleteWatchlistCollection({
+        body: JSON.stringify({
+            walletAddress: '3fcREq7WrSXYpqm2siXhPUR8iWsTovnkdm18DwqXVYnt',
+            collectionId: 515
+        }), 
+        headers: {}, 
+        multiValueHeaders: {}, 
+        httpMethod: 'DELETE', 
+        isBase64Encoded: true,
+        path: '',
+        pathParameters: {},
+        queryStringParameters: {},
+        multiValueQueryStringParameters: {},
+        stageVariables: {},
+        requestContext: {} as APIGatewayEventRequestContextWithAuthorizer<APIGatewayEventDefaultAuthorizerContext>,
+        resource: ''
+    })
+
     console.log(`response: ${JSON.stringify(response)}`)
 }
 

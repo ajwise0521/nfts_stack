@@ -51,7 +51,14 @@ export const getWalletViewerApi = (construct: Construct, vpc: aws_ec2.IVpc, prop
     lambdas.push(getAvailableTagsLambda)
     const getTargetTagsLambda = walletViewerlambdas.getTargetTags(construct)
     lambdas.push(getTargetTagsLambda)
-
+    const getAllCollections = walletViewerlambdas.getAllCollections(construct)
+    lambdas.push(getAllCollections)
+    const getWatchlistCollectionsLambda = walletViewerlambdas.getWatchlistCollections(construct)
+    lambdas.push(getWatchlistCollectionsLambda)
+    const postWatchlistCollectionLambda = walletViewerlambdas.postWatchlistCollection(construct)
+    lambdas.push(postWatchlistCollectionLambda)
+    const deleteWatchlistCollectionLambda = walletViewerlambdas.deleteWatchlistCollection(construct)
+    lambdas.push(deleteWatchlistCollectionLambda)
     // =============================================================
 
     // API
@@ -100,6 +107,12 @@ export const getWalletViewerApi = (construct: Construct, vpc: aws_ec2.IVpc, prop
     resources.push(tagsResource)
     const targetTagsResource = tagsResource.addResource('target')
     resources.push(targetTagsResource)
+    const allCollectionsResource = collectionsResource.addResource('all')
+    resources.push(allCollectionsResource)
+    const watchListResource = api.root.addResource('watchList')
+    resources.push(watchListResource)
+    const watchListCollectionsResource = watchListResource.addResource('{walletAddress}')
+    resources.push(watchListCollectionsResource)
     resources.forEach(resource => {
         resource.addCorsPreflight({
             allowOrigins: aws_apigateway.Cors.ALL_ORIGINS,
@@ -169,6 +182,29 @@ export const getWalletViewerApi = (construct: Construct, vpc: aws_ec2.IVpc, prop
     const getTargetTagsMethod = targetTagsResource.addMethod(
         'GET',
         new aws_apigateway.LambdaIntegration(getTargetTagsLambda, defaultIntegrationOptions),
+        defaultMethodOptions
+    )
+
+    const allCollectionsMethod = allCollectionsResource.addMethod(
+        'GET',
+        new aws_apigateway.LambdaIntegration(getAllCollections, defaultIntegrationOptions),
+        defaultMethodOptions
+    )
+    const getWatchlistCollectionsMethod = watchListCollectionsResource.addMethod(
+        'GET',
+        new aws_apigateway.LambdaIntegration(getWatchlistCollectionsLambda, defaultIntegrationOptions),
+        defaultMethodOptions
+    )
+
+    const postWatchListCollectionMethod = watchListResource.addMethod(
+        'POST',
+        new aws_apigateway.LambdaIntegration(postWatchlistCollectionLambda, defaultIntegrationOptions),
+        defaultMethodOptions
+    )
+
+    const deleteWatchlistCollectionMethod = watchListResource.addMethod(
+        'DELETE',
+        new aws_apigateway.LambdaIntegration(deleteWatchlistCollectionLambda, defaultIntegrationOptions),
         defaultMethodOptions
     )
     // =============================================================

@@ -12,7 +12,7 @@ const defaultLimit = 500
 export const handle = async () => {
     const magicEden = new MagicEden()
 
-    let collectionCount: number = await getCollectionCount(nftsDatabaseConnection)
+    let collectionCount: number = 0 //await getCollectionCount(nftsDatabaseConnection)
 
     let offset = collectionCount
 

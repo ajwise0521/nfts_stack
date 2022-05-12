@@ -23,6 +23,12 @@ export const getWalletCollections = async (wallet: string, connection: Database)
         })
 
         let currIndex = 0
+        if(walletNfts.length < 1) {
+            return {
+                totalCount: walletNfts.length,
+                collections: [],
+            }
+        }
         let currCollection = walletNfts[currIndex].updateAuthority
         let collections: NftWalletCollection[] = [{
             count: 1,
@@ -99,6 +105,12 @@ export const getWalletsNfts = async (wallet: string, connection: Database) => {
         })
 
         let currIndex = 0
+        if(walletNfts.length < 1) {
+            return {
+                totalCount: walletNfts.length,
+                collections: [],
+            }
+        }
         let currCollection = walletNfts[currIndex].updateAuthority
         let collections: NftWalletCollection[] = [{
             nfts: [],

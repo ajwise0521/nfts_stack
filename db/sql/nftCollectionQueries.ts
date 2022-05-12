@@ -17,8 +17,8 @@ export const upsertMagicEdenCollections = async <T>(collections: MagicEdenCollec
     try {
         queryString = collections.reduce((acc: string, el: MagicEdenCollection, i) => {
             acc = i < collections.length  - 1? 
-                acc + ` ("${el.symbol}", "${el.name.replace(/"/g, '')}", "${el.image}", "${el.twitter}", "${el.discord}", "${el.website}"),` : 
-                acc + ` ("${el.symbol}", "${el.name.replace(/"/g, '')}", "${el.image}", "${el.twitter}", "${el.discord}", "${el.website}") `
+                acc + ` ("${el.symbol}", "${el.name.replace(/"/g, '')}", "${el.image}", "${el.twitter}", "${el.discord}", "${el.website ?? null}"),` : 
+                acc + ` ("${el.symbol}", "${el.name.replace(/"/g, '')}", "${el.image}", "${el.twitter}", "${el.discord}", "${el.website ?? null}") `
             return acc
         }, nftUpdateInsertQuery)
 
@@ -26,7 +26,7 @@ export const upsertMagicEdenCollections = async <T>(collections: MagicEdenCollec
             return ''
         }
         if(queryString[queryString.length - 1] === ' ') {
-            queryString = queryString.slice(0, queryString.length - 2)
+            queryString = queryString.slice(0, queryString.length - 1)
         }
         queryString += onDuplicateKeyString;
         console.log(queryString)
@@ -116,6 +116,40 @@ export const getVerifiedCollectionsCollections = async(connection: Database): Pr
         console.log(`error mapping verified collection collections: ${error instanceof Error ? error.message : 'unknown error'}`)
         return []
     }
+}
+
+export const getAllCollections = async (connection: Database): Promise<nftCollection[]> => {
+    const queryString = 'select * from nft_collections'
+
+    try {
+        const statement = new SqlStatement(queryString, [])
+        const results = await connection.sqlQuery<nftCollection>(statement, true)
+        if(results.rows.length > 0 && !results.error) {
+            return results.rows
+        }
+        return []
+    } catch(error) {
+        throw(Error(`Error getting all collections ${error instanceof Error ? error.message : 'unknown error'}`))
+    }
+}
+
+    export const getWatchListCollections = async (connection: Database, walletAddress: string):Promise<nftCollection[]> => {
+        const queryString = `select nft_collections.* from nft_collections JOIN watchlist_collections ON nft_collections.id = watchlist_collections.collectionId where watchlist_collections.walletAddress = '${walletAddress}'`
+        try {
+            const statement = new SqlStatement(queryString, [])
+            const results = await connection.sqlQuery<nftCollection>(statement, true)
+            if(results.rows.length > 0 && !results.error) {
+                return results.rows
+            }
+            return []
+        } catch(error) {
+            throw(Error(`Error getting watchlist Collection: ${error instanceof Error ? error.message : 'unknown error'}`))
+        }
+    }
+
+export interface selectFormat {
+    value: string,
+    label: string
 }
 
 
