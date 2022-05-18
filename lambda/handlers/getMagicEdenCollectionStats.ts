@@ -3,6 +3,7 @@ import { MagicEden } from '../controllers/magicEden'
 import MySqlDatabase from "../../db/base/mysqlDatabase"
 import { nftsDbConfig } from "../../db/base/dbConfig"
 import { isVerified } from '../controllers/verificationController'
+import { insertCollectionStats } from "../../db/sql/collectionStatsQueries"
 import { getAllowedResponseHeaders } from "../../helpers/cdkHelpers"
 const nftsDatabaseConnection = new MySqlDatabase('NFTs Database Connection', nftsDbConfig)
 
@@ -18,6 +19,8 @@ export const handle = async(event: APIGatewayProxyEvent): Promise<APIGatewayProx
             }
         }
         const stats = await magicEdenInstance.getCollectionStats(collectionName)
+        
+        await insertCollectionStats(nftsDatabaseConnection, stats)
         return {
             body: JSON.stringify(stats),
             statusCode: 200,

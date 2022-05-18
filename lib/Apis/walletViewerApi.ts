@@ -59,6 +59,8 @@ export const getWalletViewerApi = (construct: Construct, vpc: aws_ec2.IVpc, prop
     lambdas.push(postWatchlistCollectionLambda)
     const deleteWatchlistCollectionLambda = walletViewerlambdas.deleteWatchlistCollection(construct)
     lambdas.push(deleteWatchlistCollectionLambda)
+    const getCollectionStatsHistoryLambda = walletViewerlambdas.getCollectionStatsHistory(construct)
+    lambdas.push(getCollectionStatsHistoryLambda)
     // =============================================================
 
     // API
@@ -113,6 +115,12 @@ export const getWalletViewerApi = (construct: Construct, vpc: aws_ec2.IVpc, prop
     resources.push(watchListResource)
     const watchListCollectionsResource = watchListResource.addResource('{walletAddress}')
     resources.push(watchListCollectionsResource)
+    const historyResource = api.root.addResource('history')
+    resources.push(historyResource)
+    const historyStatsResource = historyResource.addResource('stats')
+    resources.push(historyStatsResource)
+    const historyStatsCollectionIdResource = historyStatsResource.addResource('{collectionId}')
+    resources.push(historyStatsCollectionIdResource)
     resources.forEach(resource => {
         resource.addCorsPreflight({
             allowOrigins: aws_apigateway.Cors.ALL_ORIGINS,
@@ -205,6 +213,12 @@ export const getWalletViewerApi = (construct: Construct, vpc: aws_ec2.IVpc, prop
     const deleteWatchlistCollectionMethod = watchListResource.addMethod(
         'DELETE',
         new aws_apigateway.LambdaIntegration(deleteWatchlistCollectionLambda, defaultIntegrationOptions),
+        defaultMethodOptions
+    )
+
+    const historyStatsCollectionIdMethod = historyStatsCollectionIdResource.addMethod(
+        'GET',
+        new aws_apigateway.LambdaIntegration(getCollectionStatsHistoryLambda, defaultIntegrationOptions),
         defaultMethodOptions
     )
     // =============================================================

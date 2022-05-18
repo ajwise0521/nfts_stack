@@ -23,6 +23,9 @@ import { handle as getAllCollections } from '../lambda/handlers/getAllCollection
 import { handle as getWatchListCollections } from '../lambda/handlers/getWatchlistCollections'
 import { handle as postWatchlistCollection } from '../lambda/handlers/postWatchlistCollection'
 import { handle as deleteWatchlistCollection} from '../lambda/handlers/deleteWatchlistCollection'
+import { handle as getCollectionStats } from '../lambda/handlers/getMagicEdenCollectionStats'
+import { handle as getCollectionStatsHistory } from '../lambda/handlers/getCollectionStatsHistory'
+import { handle as fetchOutdatedStats } from '../lambda/handlers/fetchOutdatedCollectionStats'
 const url = solanaWeb3.clusterApiUrl('mainnet-beta')
 const solanaConnection = new solanaWeb3.Connection(url, 'confirmed')
 
@@ -199,27 +202,62 @@ const handler = async () => {
     // })
 
 
-    const response = await deleteWatchlistCollection({
-        body: JSON.stringify({
-            walletAddress: '3fcREq7WrSXYpqm2siXhPUR8iWsTovnkdm18DwqXVYnt',
-            collectionId: 515
-        }), 
-        headers: {}, 
-        multiValueHeaders: {}, 
-        httpMethod: 'DELETE', 
-        isBase64Encoded: true,
-        path: '',
-        pathParameters: {},
-        queryStringParameters: {},
-        multiValueQueryStringParameters: {},
-        stageVariables: {},
-        requestContext: {} as APIGatewayEventRequestContextWithAuthorizer<APIGatewayEventDefaultAuthorizerContext>,
-        resource: ''
-    })
+    // const response = await deleteWatchlistCollection({
+    //     body: JSON.stringify({
+    //         walletAddress: '3fcREq7WrSXYpqm2siXhPUR8iWsTovnkdm18DwqXVYnt',
+    //         collectionId: 515
+    //     }), 
+    //     headers: {}, 
+    //     multiValueHeaders: {}, 
+    //     httpMethod: 'DELETE', 
+    //     isBase64Encoded: true,
+    //     path: '',
+    //     pathParameters: {},
+    //     queryStringParameters: {},
+    //     multiValueQueryStringParameters: {},
+    //     stageVariables: {},
+    //     requestContext: {} as APIGatewayEventRequestContextWithAuthorizer<APIGatewayEventDefaultAuthorizerContext>,
+    //     resource: ''
+    // })
 
-    console.log(`response: ${JSON.stringify(response)}`)
+//     const response = await getCollectionStats({
+//         body: '', 
+//         headers: {}, 
+//         multiValueHeaders: {}, 
+//         httpMethod: 'GET', 
+//         isBase64Encoded: true,
+//         path: '',
+//         pathParameters: {collectionName: 'cyber_pharmacies'},
+//         queryStringParameters: {},
+//         multiValueQueryStringParameters: {},
+//         stageVariables: {},
+//         requestContext: {} as APIGatewayEventRequestContextWithAuthorizer<APIGatewayEventDefaultAuthorizerContext>,
+//         resource: ''
+//     })
+
+//     console.log(`response: ${JSON.stringify(response)}`)
+// }
+
+// const response = await getCollectionStatsHistory({
+//     body: '', 
+//     headers: {}, 
+//     multiValueHeaders: {}, 
+//     httpMethod: 'GET', 
+//     isBase64Encoded: true,
+//     path: '',
+//     pathParameters: {collectionId: '14205'},
+//     queryStringParameters: {},
+//     multiValueQueryStringParameters: {},
+//     stageVariables: {},
+//     requestContext: {} as APIGatewayEventRequestContextWithAuthorizer<APIGatewayEventDefaultAuthorizerContext>,
+//     resource: ''
+// })
+
+const response = await fetchOutdatedStats()
+
+console.log(`response: ${JSON.stringify(response)}`)
+return
 }
-
 
 
 handler()

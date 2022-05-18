@@ -147,3 +147,12 @@ export const deleteWatchlistCollection = (construct: Construct): lambda.NodejsFu
         memorySize: 256
     })
 }
+
+export const getCollectionStatsHistory = (construct: Construct): lambda.NodejsFunction => {
+    return new lambda.NodejsFunction(construct, 'getCollectionStatsHistory', {
+        entry: 'lambda/handlers/getCollectionStatsHistory.ts',
+        handler: 'handle',
+        timeout: Duration.seconds(30),
+        memorySize: 256
+    })
+}

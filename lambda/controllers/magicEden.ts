@@ -63,10 +63,11 @@ export interface MagicEdenCollection {
     categories: string[]
 }
 
-interface CollectionStats {
+export interface CollectionStats {
     symbol: string,
     floorPrice: number,
     listedCount: number,
+    avgPrice24hr: number,
     volumeAll: number    
 }
 
