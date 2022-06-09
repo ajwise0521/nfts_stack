@@ -15,8 +15,9 @@ import { getNftsDatabase } from './Database/NFtsDatabase';
       const vpc = getVpc(this)
 
         const walletViewerApi = getWalletViewerApi(this, vpc, props ?? {})
-
-        const nftsDatabase = getNftsDatabase(this, vpc, props ?? {})
+        if(!(props?.stackName?.split('-')[1] === 'Stage')) {
+         const nftsDatabase = getNftsDatabase(this, vpc, props ?? {})
+        }
 
     }
   }
