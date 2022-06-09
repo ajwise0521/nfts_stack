@@ -13,7 +13,7 @@ export const handle = async () => {
     try {
         let i = 0
         while(i < 6500) {
-            let collections = await getCollectionsWithoutUpdateAuthorities(nftsDatabaseConnection, 50)
+            let collections = await getCollectionsWithoutUpdateAuthorities(nftsDatabaseConnection, 25)
             const magicEden = new MagicEden()
             for(let item of collections) {
                 console.log(item.symbol)

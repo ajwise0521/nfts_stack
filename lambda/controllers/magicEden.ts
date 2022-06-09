@@ -47,7 +47,8 @@ export class MagicEden {
             return data as MagicEdenListing[]
         } catch(error) {
             console.log(`error getting ME collection listings ${error instanceof Error ? error.message : 'unknown error'}`)
-            throw(error)
+            // throw(error)
+            return []
         }
     }
 

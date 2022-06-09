@@ -5,9 +5,11 @@ import { CollectionStats } from "../../lambda/controllers/magicEden"
 import { isUndefined } from "lodash"
 import { stat } from "fs"
 export const insertCollectionStats = async (connection: Database, stats: CollectionStats): Promise<string> => {
+
     const queryString = `INSERT INTO collection_stats 
-    (collection_id, symbol, floorPrice, listedCount, avgPrice24hr, volumeAll, created_at) 
-    VALUES ((SELECT id FROM nft_collections WHERE symbol='${stats.symbol}' LIMIT 1), '${stats.symbol}', ${!isUndefined(stats.floorPrice) ? stats.floorPrice : 0}, ${!isUndefined(stats.listedCount) ? stats.listedCount : 0}, ${!isUndefined(stats.avgPrice24hr) ? stats.avgPrice24hr : `NULL`}, ${!isUndefined(stats.volumeAll) ? stats.volumeAll : 0  }, NOW())`
+    (collection_id, symbol, floorPrice, listedCount, avgPrice24hr, volumeAll, created_at)
+    SELECT (SELECT id FROM nft_collections WHERE symbol='' LIMIT 1), '${stats.symbol}', ${!isUndefined(stats.floorPrice) ? stats.floorPrice : 0}, ${!isUndefined(stats.listedCount) ? stats.listedCount : 0}, ${!isUndefined(stats.avgPrice24hr) ? stats.avgPrice24hr : `NULL`}, ${!isUndefined(stats.volumeAll) ? stats.volumeAll : 0  }, NOW() where (select count(symbol) from collection_stats where symbol='${stats.symbol}' AND created_at > NOW() - INTERVAL 1 HOUR) < 1`
+
     console.log(queryString)
     try {
         const statement = new SqlStatement(queryString, [])
@@ -39,7 +41,11 @@ export const getCollectionStatsHistory = async (connection: Database, collection
 }
 
 export const getOutdatedCollectionStats = async (connection: Database): Promise<nftCollection[]> => {
-    const queryString = `select nft_collections.*, collection_stats.created_at as last_update from nft_collections LEFT JOIN collection_stats ON nft_collections.id = collection_stats.collection_id where collection_stats.created_at <= now() - INTERVAL 1 DAY OR collection_stats.created_at IS NULL group by symbol ORDER by last_update LIMIT 10`
+    const queryString = `SELECT nft_collections.*, c.* FROM nft_collections 
+        LEFT JOIN ( SELECT MAX(created_at) AS last_update, collection_id
+        FROM collection_stats group by collection_stats.collection_id) c 
+        ON nft_collections.id=c.collection_id where last_update <= now() - INTERVAL 1 DAY 
+        OR last_update IS NULL AND nft_collections.symbol IS NOT NULL order by c.last_update asc`
     try {
         const statement = new SqlStatement(queryString, [])
         const results = await connection.sqlQuery<nftCollection>(statement, true)

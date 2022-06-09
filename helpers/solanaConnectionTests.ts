@@ -253,7 +253,10 @@ const handler = async () => {
 //     resource: ''
 // })
 
-const response = await fetchOutdatedStats()
+// const response = await fetchOutdatedStats()
+
+const response = await getCollectionsUpdateAuthorities()
+// const response = await getMagicEdenCollections()
 
 console.log(`response: ${JSON.stringify(response)}`)
 return
